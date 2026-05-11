@@ -154,8 +154,123 @@ data['M4'].fillna(value=data['M4'].mode(),inplace=True)
 data
 ```
 
-<img width="1127" height="711" alt="image" src="https://github.com/user-attachments/assets/12a8cf6e-eec4-47ec-8cb7-1100628c8249" />
+<img width="1127" height="711" alt="image" src="https://github.com/user-attachments/assets/12a8cf6e-eec4-47ec-8cb7-1100628c8249" /><br>
+
+# IQR Method:
+```
+import pandas as pd
+ir=pd.read_csv("iris.csv")
+ir
+```
+
+<img width="596" height="437" alt="image" src="https://github.com/user-attachments/assets/4071b6a6-6b83-4fd4-82ba-566e7eb5c25d" /><br>
+```
+ir.describe()
+```
+
+<img width="492" height="297" alt="image" src="https://github.com/user-attachments/assets/f3de7f9a-6ff0-4cbe-ad15-6d0be77eddad" /><br>
+```
+ir.shape
+```
+```
+(150, 5)
+```
+```
+ir.info()
+```
+
+<img width="458" height="257" alt="image" src="https://github.com/user-attachments/assets/30cf4ea3-9f94-4dcc-8e4b-f3fa71f7767e" /><br>
+```
+import seaborn as sns
+sns.boxplot(x='sepal_width',data=ir)
+```
+
+<img width="712" height="582" alt="image" src="https://github.com/user-attachments/assets/3dd0ee96-0adb-4771-bb1e-49f3721bf85b" /><br>
+```
+ q1=ir.sepal_width.quantile(0.25)
+ q3=ir.sepal_width.quantile(0.75)
+ iqr=q3-q1
+ print(iqr)
+```
+```
+0.5
+```
+```
+ out=ir[((ir.sepal_width<(q1-1.5*iqr))|(ir.sepal_width>(q3+1.5*iqr)))]
+ out['sepal_width']
+```
+
+<img width="326" height="116" alt="image" src="https://github.com/user-attachments/assets/f59d31e6-5f29-4455-90e3-6e035fcd78ff" /><br>
+```
+ nor=ir[~((ir.sepal_width<(q1-1.5*iqr))|(ir.sepal_width>(q3+1.5*iqr)))]
+ nor['sepal_width']
+```
+
+<img width="487" height="268" alt="image" src="https://github.com/user-attachments/assets/c137dcbb-24a2-45e8-a782-c8cd1f57c734" /><br>
+```
+sns.boxplot(x='sepal_width',data=nor)
+```
+
+<img width="672" height="578" alt="image" src="https://github.com/user-attachments/assets/bddb1196-a195-4374-8389-9dc9051f8149" /><br>
+
+# Z-Score Method:
+```
+import numpy as np
+import pandas as pd
+df=pd.read_csv("heights.csv")
+df
+```
+
+<img width="192" height="498" alt="image" src="https://github.com/user-attachments/assets/f021b511-b8d2-4c08-9210-bc19d4c0ca6b" /><br>
+```
+import scipy.stats as stats
+q1 = df['height'].quantile(0.25)
+q2 = df['height'].quantile(0.5)
+q3 = df['height'].quantile(0.75)
+iqr = q3-q1
+iqr
+```
+```
+0.92499999999999998
+```
+```
+low = q1 - 1.5*iqr
+print(low)
+high = q3 + 1.5*iqr
+print(high)
+```
+
+
+<img width="205" height="55" alt="image" src="https://github.com/user-attachments/assets/88e81149-7dc7-4cd7-9b50-f521773e9ac9" /><br>
+```
+df1 = df[((df['height'] >=low)& (df['height'] <=high))]
+df1
+```
+
+<img width="213" height="433" alt="image" src="https://github.com/user-attachments/assets/937d8b76-b3de-40c3-9786-2f220fb59228" /><br>
+```
+z = np.abs(stats.zscore(df['height']))
+z
+```
+
+<img width="291" height="328" alt="image" src="https://github.com/user-attachments/assets/b18c516c-5f18-4474-9366-9d26dd8ccfcf" /><br>
+```
+df1 = df[z<3]
+df1
+```
+
+<img width="186" height="461" alt="image" src="https://github.com/user-attachments/assets/de52217b-a2f1-4253-9021-a3b5e801fa5d" />
+
+
+
+
+
+
+
+
+
+
 
 
 # Result:
-The given dataset was successfully read and cleaned using Python. Missing values and duplicate records were handled properly, and the cleaned data was saved into a new file named cleaned_data.csv.
+The given dataset was successfully read and cleaned using Python. Missing values and duplicate records were handled properly, and the cleaned data was saved into a new file named cleaned_data.csv and removed the outliers using IQR and Z-score method.
